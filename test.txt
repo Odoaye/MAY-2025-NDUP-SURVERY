@@ -1,0 +1,61 @@
+
+
+
+    "What digital tools (if any) do you currently use to track your under-level fair progress, and how effective are they?",
+    "How challenging is it to access real-time updates or changes during under-level fair rounds?",
+    "Would a digital platform that tracks your fair progress, deadlines, and required steps improve your experience? Why or why not?",
+    "Have you ever missed or delayed a fair round due to unclear or late information? How could digital reminders or notifications help?",
+    "Would a centralized digital portal for handling administrative tasks (e.g., course registration, fee payments) make these processes easier? Why?",
+    "When you face issues with registration or fee payments, how easy is it to find a digital solution or contact support online?",
+    "Would you prefer a self-service platform where you can resolve common issues (e.g., printing forms, checking deadlines) without visiting school offices?",
+    "What are your biggest frustrations when managing academic tasks online (e.g., slow platforms, outdated information, no notifications)?",
+    "If you had a personal dashboard to view all academic deadlines, announcements, and support in one place, how would that impact your daily school life?",
+    "How often do you struggle to find digital support for resolving school-related issues (e.g., submitting complaints, tracking requests)? What could improve this?",
+    "How often do you struggle with outdated or inconsistent information online? What kind of digital solution would help you trust official updates?",
+    "Would you find it useful to have a personalized notification system that reminds you of deadlines, meetings, and school activities?",
+    "What digital features (e.g., automated reminders, online appointment booking, real-time notifications) would make your school experience smoother?",
+    "If the ICT department could create one digital tool to ease student life, what would you want it to do?",
+    "What other digital solutions do you believe would improve communication and academic processes at NDU?",
+    "What digital solutions from other platforms (e.g., mobile apps, student portals) do you wish NDU had?",
+
+############################################################################################################################################
+
+// Initialize EmailJS
+emailjs.init('YOUR_USER_ID'); // Replace with your EmailJS user ID
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch('questions.json')
+    .then(response => response.json())
+    .then(questions => {
+      const container = document.getElementById('questions-container');
+      questions.forEach((q, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+          <label for="answer${index}">${q}</label>
+          <textarea id="answer${index}" name="answer${index}" rows="3" required></textarea>
+        `;
+        container.appendChild(wrapper);
+      });
+    });
+
+  document.getElementById('survey-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const textareas = document.querySelectorAll('textarea');
+    let emailContent = '';
+
+    textareas.forEach((textarea, index) => {
+      const question = document.querySelector(`label[for=${textarea.id}]`).textContent;
+      emailContent += `${question}\n${textarea.value.trim()}\n\n`;
+    });
+
+    emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+      message: emailContent
+    }).then(() => {
+      alert("Survey submitted successfully!");
+      this.reset();
+    }).catch((err) => {
+      alert("Error sending survey: " + err.text);
+    });
+  });
+});
